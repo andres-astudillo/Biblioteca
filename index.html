@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Biblioteca</h1>
+    <form id="formulario-libro">
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo"><br><br>
+        <label for="autor">Autor:</label>
+        <input type="text" id="autor" name="autor"><br><br>
+        <label for="genero">Género:</label>
+        <input type="text" id="genero" name="genero"><br><br>
+        <label for="portada">Portada:</label>
+        <input type="file" id="portada" name="portada" accept="image/*"><br><br>
+        <input type="submit" value="Agregar libro">
+    </form>
+    <input type="text" id="busqueda" placeholder="Buscar libro...">
+    <table id="tabla-libros">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Género</th>
+                <th>Portada</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="cuerpo-tabla">
+            <!-- Los libros se agregarán aquí -->
+        </tbody>
+    </table>
+
+    <script src="script.js"></script>
+</body>
+</html>
