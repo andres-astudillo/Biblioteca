@@ -24,7 +24,7 @@ let listadoLibros = [
 function editLibro() {
   const idLibro = document.getElementById("idLibro").value;
   if (idLibro > 0 && idLibro <= listadoLibros.length) {
-    const auto = listadoLibros[idLibro - 1];
+    const libro = listadoLibros[idLibro - 1];
     saveStorage("autoEdit", libro);
     window.location.href = "html/Agregar-Libro.html";
   }
@@ -44,7 +44,7 @@ function deleteLibro() {
 //Cargar en tabla
 function loadData() {
   let dataLibros = document.getElementById("data-libros");
-  dataAutos.innerHTML = "";
+  dataLibros.innerHTML = "";
   if (listadoLibros.length > 0) {
     listadoLibros.forEach((libro, index) => {
       let contenedor = document.createElement("tr");
@@ -52,8 +52,7 @@ function loadData() {
        <td>${libro.titulo}</td>
        <td>${libro.autor}</td>
        <td>${libro.genero}</td>
-       <td>${libro.sinopsis}</td>
-       <td>${auto.precio}</td>`;
+       <td>${libro.sinopsis}</td>`;
       dataLibros.appendChild(contenedor);
     });
     saveStorage("libros", listadoLibros);
@@ -61,14 +60,14 @@ function loadData() {
 }
 
 function main() {
-  const autos = getStorage("libros");
+  const libros = getStorage("libros");
   if (libros == null) {
     saveStorage("libros", listadoLibros);
   } else {
     listadoLibros = getStorage("libros");
   }
   loadData();
-  resetStorage("liboEdit");
+  resetStorage("libroEdit");
 }
 
 let btnDelete = document.getElementById("btn-delete");
@@ -80,7 +79,7 @@ btnEdit.addEventListener("click", abrirInputEdit);
 function abrirInputDelete() {
   let btnContainer = document.getElementById("btn-container");
   btnContainer.innerHTML = `<div class="col-md-4">
-                        <label for="idAuto" class="form-label">Indica el nro de libro a eliminar</label>
+                        <label for="idLibro" class="form-label">Indica el nro de libro a eliminar</label>
                         <input type="text" class="form-control" id="idLibro" name="idLibro" required autofocus placeholder="Nro Libro">
                       </div>
                       <br>
