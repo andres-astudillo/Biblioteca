@@ -3,22 +3,24 @@ let listadoLibros = [
     titulo: "El Código Da Vinci",
     autor: "Da Brown.",
     genero: "Thriller, misterio.",
-    sinopsis: "Este libro combina arte, historia, simbología y conspiración. La trama gira en torno a un profesor de simbología que investiga un asesinato en el Louvre y descubre una serie de enigmas relacionados con la Iglesia católica y la obra de Leonardo da Vinci¹.",
+    sinopsis:
+      "Este libro combina arte, historia, simbología y conspiración. La trama gira en torno a un profesor de simbología que investiga un asesinato en el Louvre y descubre una serie de enigmas relacionados con la Iglesia católica y la obra de Leonardo da Vinci¹.",
   },
   {
     titulo: "El Señor de los Anillos",
     autor: "J.R.R. Tolkien.",
     genero: "Fantasía épica.",
-    sinopsis: "Una saga épica que sigue las aventuras de hobbits, elfos, enanos y humanos en un mundo lleno de magia, criaturas fantásticas y un anillo con poderes oscuros².",
+    sinopsis:
+      "Una saga épica que sigue las aventuras de hobbits, elfos, enanos y humanos en un mundo lleno de magia, criaturas fantásticas y un anillo con poderes oscuros².",
   },
   {
     titulo: "El Principito",
     autor: "Antoine de Saint-Exupéry.",
     genero: "Antoine de Saint-Exupéry.",
-    sinopsis: "Una fábula sobre la amistad, la soledad y la importancia de ver el mundo con ojos de niño. El Principito viaja por diferentes planetas y aprende valiosas lecciones de vida².",
+    sinopsis:
+      "Una fábula sobre la amistad, la soledad y la importancia de ver el mundo con ojos de niño. El Principito viaja por diferentes planetas y aprende valiosas lecciones de vida².",
   },
 ];
-
 
 //Editar libro
 function editLibro() {
@@ -110,7 +112,7 @@ function abrirInputEdit() {
 
 function restaurarBtn() {
   let btnContainer = document.getElementById("btn-container");
-  btnContainer.innerHTML = `<a href="html/Agregar-Libro.html" class="btn btn-success">Agregar</a>
+  btnContainer.innerHTML = `<a href="pages/Agregar-Libro.html" class="btn btn-success">Agregar</a>
                               <a class="btn btn-warning" id="btn-edit">Editar</a>
                               <button type="button" class="btn btn-danger" id="btn-delete">Eliminar</button>`;
   let btnDelete = document.getElementById("btn-delete");
