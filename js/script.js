@@ -1,145 +1,130 @@
-let listadoLibros = [
-  {
-    titulo: "El Código Da Vinci",
-    autor: "Da Brown.",
-    genero: "Thriller, misterio",
-    sinopsis:
-      "Este libro combina arte, historia, simbología y conspiración. La trama gira en torno a un profesor de simbología que investiga un asesinato en el Louvre y descubre una serie de enigmas relacionados con la Iglesia católica y la obra de Leonardo da Vinci¹.",
-  },
-  {
-    titulo: "El Señor de los Anillos",
-    autor: "J.R.R. Tolkien.",
-    genero: "Fantasía épica",
-    sinopsis:
-      "Una saga épica que sigue las aventuras de hobbits, elfos, enanos y humanos en un mundo lleno de magia, criaturas fantásticas y un anillo con poderes oscuros².",
-  },
-  {
-    titulo: "El Principito",
-    autor: "Antoine de Saint-Exupéry.",
-    genero: "Fábula",
-    sinopsis:
-      "Una fábula sobre la amistad, la soledad y la importancia de ver el mundo con ojos de niño. El Principito viaja por diferentes planetas y aprende valiosas lecciones de vida².",
-  },
-];
-
-//Editar libro
-function editLibro() {
-  const idLibro = parseInt(document.getElementById("idLibro").value);
-  if (idLibro > 0 && idLibro <= listadoLibros.length) {
-    const libro = listadoLibros[idLibro - 1];
-    if (libro) {
-      saveStorage("libroEdit", libro);
-      window.location.href = "html/Agregar-Libro.html";
-    } else {
-      alert("El libro no existe");
-    }
+class Libro {
+  constructor(titulo, autor, genero, sinopsis) {
+      this.titulo = titulo;
+      this.autor = autor;
+      this.genero = genero;
+      this.sinopsis = sinopsis;
   }
 }
 
-//Borrar libro
-function deleteLibro() {
-  const idLibro = parseInt(document.getElementById("idLibro").value);
-  if (idLibro > 0 && idLibro <= listadoLibros.length) {
-    const libro = listadoLibros[idLibro - 1];
-    if (libro) {
-      listadoLibros.splice(idLibro - 1, 1);
-      saveStorage("libros", listadoLibros);
-      loadData();
-      restaurarBtn();
-    } else {
-      alert("El libro no existe");
-    }
-  }
-}
+let listadoLibros = JSON.parse(localStorage.getItem("libros")) || [];
 
-//Cargar en tabla
-function loadData() {
-  let dataLibros = document.getElementById("data-libros");
-  dataLibros.innerHTML = "";
-  if (listadoLibros.length > 0) {
-    listadoLibros.forEach((libro, index) => {
-      let contenedor = document.createElement("tr");
-      contenedor.innerHTML = `<td>${index + 1}</td>
-       <td>${libro.titulo}</td>
-       <td>${libro.autor}</td>
-       <td>${libro.genero}</td>
-       <td>${libro.sinopsis}</td>`;
-      dataLibros.appendChild(contenedor);
-    });
-    saveStorage("libros", listadoLibros);
-  }
-}
-
-function main() {
-  const libros = getStorage("libros");
-  if (libros == null) {
-    saveStorage("libros", listadoLibros);
-  } else {
-    listadoLibros = getStorage("libros");
-  }
+document.addEventListener('DOMContentLoaded', () => {
   loadData();
-  resetStorage("libroEdit");
+  document.getElementById("search-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      searchBooks();
+  });
+  document.getElementById("form-edit").addEventListener("submit", function (event) {
+      event.preventDefault();
+      updateLibro();
+  });
+  document.getElementById("cancel-edit").addEventListener("click", function () {
+      document.getElementById("edit-form").classList.add("d-none");
+  });
+});
+
+function loadData() {
+  const dataLibros = document.getElementById("data-libros");
+  dataLibros.innerHTML = "";
+  listadoLibros.forEach((libro, index) => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `<td>${index + 1}</td>
+         <td>${libro.titulo}</td>
+         <td>${libro.autor}</td>
+         <td>${libro.genero}</td>
+         <td>${libro.sinopsis}</td>
+         <td>
+             <button class="btn btn-warning btn-edit" data-index="${index}">Editar</button>
+             <button class="btn btn-danger btn-delete" data-index="${index}">Eliminar</button>
+         </td>`;
+      dataLibros.appendChild(fila);
+  });
+
+  document.querySelectorAll(".btn-edit").forEach(button => {
+      button.addEventListener("click", function () {
+          const index = this.dataset.index;
+          showEditForm(index);
+      });
+  });
+
+  document.querySelectorAll(".btn-delete").forEach(button => {
+      button.addEventListener("click", function () {
+          const index = this.dataset.index;
+          deleteLibro(index);
+      });
+  });
 }
 
-let btnDelete = document.getElementById("btn-delete");
-btnDelete.addEventListener("click", abrirInputDelete);
-
-let btnEdit = document.getElementById("btn-edit");
-btnEdit.addEventListener("click", abrirInputEdit);
-
-function abrirInputDelete() {
-  let btnContainer = document.getElementById("btn-container");
-  btnContainer.innerHTML = `<div class="col-md-4">
-                        <label for="idLibro" class="form-label">Indica el nro de libro a eliminar</label>
-                        <input type="text" class="form-control" id="idLibro" name="idLibro" required autofocus placeholder="Nro Libro">
-                      </div>
-                      <br>
-                      <button class="btn btn-secondary" id="btn-Cancelar">Cancelar</button>
-                      <button class="btn btn-danger" id="eliminarLibro">Eliminar</button>
-                      `;
-  let btnCancelar = document.getElementById("btn-Cancelar");
-  btnCancelar.addEventListener("click", restaurarBtn);
-  let eliminarLibro = document.getElementById("eliminarLibro");
-  eliminarLibro.addEventListener("click", deleteLibro);
+function showEditForm(index) {
+  const libro = listadoLibros[index];
+  document.getElementById("edit-index").value = index;
+  document.getElementById("edit-titulo").value = libro.titulo;
+  document.getElementById("edit-autor").value = libro.autor;
+  document.getElementById("edit-genero").value = libro.genero;
+  document.getElementById("edit-sinopsis").value = libro.sinopsis;
+  document.getElementById("edit-form").classList.remove("d-none");
 }
 
-function abrirInputEdit() {
-  let btnContainer = document.getElementById("btn-container");
-  btnContainer.innerHTML = `<div class="col-md-4">
-                        <label for="idLibro" class="form-label">Indica el nro de libro a editar</label>
-                        <input type="text" class="form-control" id="idLibro" name="idLibro" required autofocus placeholder="Nro Libro">
-                      </div>
-                      <br>
-                      <button class="btn btn-secondary" id="btn-Cancelar">Cancelar</button>
-                      <button class="btn btn-primary" id="editarLibro">Editar</button>
-                      `;
-  let btnCancelar = document.getElementById("btn-Cancelar");
-  btnCancelar.addEventListener("click", restaurarBtn);
-  let editaLibro = document.getElementById("editarLibro");
-  editarLibro.addEventListener("click", editLibro);
+function updateLibro() {
+  const index = document.getElementById("edit-index").value;
+  const titulo = document.getElementById("edit-titulo").value;
+  const autor = document.getElementById("edit-autor").value;
+  const genero = document.getElementById("edit-genero").value;
+  const sinopsis = document.getElementById("edit-sinopsis").value;
+
+  listadoLibros[index] = new Libro(titulo, autor, genero, sinopsis);
+  localStorage.setItem("libros", JSON.stringify(listadoLibros));
+  loadData();
+  document.getElementById("edit-form").classList.add("d-none");
 }
 
-function restaurarBtn() {
-  let btnContainer = document.getElementById("btn-container");
-  btnContainer.innerHTML = `<a href="pages/Agregar-Libro.html" class="btn btn-success">Agregar</a>
-                              <a class="btn btn-warning" id="btn-edit">Editar</a>
-                              <button type="button" class="btn btn-danger" id="btn-delete">Eliminar</button>`;
-  let btnDelete = document.getElementById("btn-delete");
-  btnDelete.addEventListener("click", abrirInputDelete);
-  let btnEdit = document.getElementById("btn-edit");
-  btnEdit.addEventListener("click", abrirInputEdit);
+function deleteLibro(index) {
+  listadoLibros.splice(index, 1);
+  localStorage.setItem("libros", JSON.stringify(listadoLibros));
+  loadData();
 }
 
-//FUNCIONES DE LOCAL STORAGE
-function getStorage(clave) {
-  return JSON.parse(localStorage.getItem(clave)); // Recupero la informacion del localStorage, sino existe devuelve 1
-}
-function saveStorage(clave, valor) {
-  localStorage.setItem(clave, JSON.stringify(valor)); // guardo en el LocalStorage el resultado
+function searchBooks() {
+  const searchTerm = document.getElementById("search-input").value.toLowerCase();
+  const filteredBooks = listadoLibros.filter(libro =>
+      libro.titulo.toLowerCase().includes(searchTerm) ||
+      libro.autor.toLowerCase().includes(searchTerm) ||
+      libro.genero.toLowerCase().includes(searchTerm) ||
+      libro.sinopsis.toLowerCase().includes(searchTerm)
+  );
+
+  displayFilteredBooks(filteredBooks);
 }
 
-const resetStorage = (clave) => {
-  localStorage.removeItem(clave); // reseteo en el LocalStorage
-};
+function displayFilteredBooks(filteredBooks) {
+  const dataLibros = document.getElementById("data-libros");
+  dataLibros.innerHTML = "";
+  filteredBooks.forEach((libro, index) => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `<td>${index + 1}</td>
+         <td>${libro.titulo}</td>
+         <td>${libro.autor}</td>
+         <td>${libro.genero}</td>
+         <td>${libro.sinopsis}</td>
+         <td>
+             <button class="btn btn-warning btn-edit" data-index="${index}">Editar</button>
+             <button class="btn btn-danger btn-delete" data-index="${index}">Eliminar</button>
+         </td>`;
+      dataLibros.appendChild(fila);
+  });
 
-main();
+  document.querySelectorAll(".btn-edit").forEach(button => {
+      button.addEventListener("click", function () {
+          const index = this.dataset.index;
+          showEditForm(index);
+      });
+  });
+
+  document.querySelectorAll(".btn-delete").forEach(button => {
+      button.addEventListener("click", function () {
+          const index = this.dataset.index;
+          deleteLibro(index);
+      });
+  });
+}
