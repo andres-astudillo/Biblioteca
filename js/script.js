@@ -2,21 +2,21 @@ let listadoLibros = [
   {
     titulo: "El Código Da Vinci",
     autor: "Da Brown.",
-    genero: "Thriller, misterio.",
+    genero: "Thriller, misterio",
     sinopsis:
       "Este libro combina arte, historia, simbología y conspiración. La trama gira en torno a un profesor de simbología que investiga un asesinato en el Louvre y descubre una serie de enigmas relacionados con la Iglesia católica y la obra de Leonardo da Vinci¹.",
   },
   {
     titulo: "El Señor de los Anillos",
     autor: "J.R.R. Tolkien.",
-    genero: "Fantasía épica.",
+    genero: "Fantasía épica",
     sinopsis:
       "Una saga épica que sigue las aventuras de hobbits, elfos, enanos y humanos en un mundo lleno de magia, criaturas fantásticas y un anillo con poderes oscuros².",
   },
   {
     titulo: "El Principito",
     autor: "Antoine de Saint-Exupéry.",
-    genero: "Antoine de Saint-Exupéry.",
+    genero: "Fábula",
     sinopsis:
       "Una fábula sobre la amistad, la soledad y la importancia de ver el mundo con ojos de niño. El Principito viaja por diferentes planetas y aprende valiosas lecciones de vida².",
   },
@@ -24,22 +24,31 @@ let listadoLibros = [
 
 //Editar libro
 function editLibro() {
-  const idLibro = document.getElementById("idLibro").value;
+  const idLibro = parseInt(document.getElementById("idLibro").value);
   if (idLibro > 0 && idLibro <= listadoLibros.length) {
     const libro = listadoLibros[idLibro - 1];
-    saveStorage("autoEdit", libro);
-    window.location.href = "html/Agregar-Libro.html";
+    if (libro) {
+      saveStorage("libroEdit", libro);
+      window.location.href = "html/Agregar-Libro.html";
+    } else {
+      alert("El libro no existe");
+    }
   }
 }
 
 //Borrar libro
 function deleteLibro() {
-  const idLibro = document.getElementById("idLibro").value;
+  const idLibro = parseInt(document.getElementById("idLibro").value);
   if (idLibro > 0 && idLibro <= listadoLibros.length) {
-    listadoLibros.splice(idLibro - 1, 1);
-    saveStorage("libros", listadoLibros);
-    loadData();
-    restaurarBtn();
+    const libro = listadoLibros[idLibro - 1];
+    if (libro) {
+      listadoLibros.splice(idLibro - 1, 1);
+      saveStorage("libros", listadoLibros);
+      loadData();
+      restaurarBtn();
+    } else {
+      alert("El libro no existe");
+    }
   }
 }
 
